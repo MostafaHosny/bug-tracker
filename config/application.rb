@@ -21,7 +21,12 @@ module BugTracker
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
+    	#create new connection with rabbit mq server using bunny 
+    	config.rabbitmq_conn = Bunny.new
+		#start the connection 
+		config.rabbitmq_conn.start
+		# create new chanel with send data with diffrent quues 
+		config.rabbitmq_channel = config.rabbitmq_conn.create_channel
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.

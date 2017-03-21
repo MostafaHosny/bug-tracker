@@ -7,20 +7,14 @@ module Api::V1
     	end
 
     	def create
-    		
-    		STDOUT.sync = true
-			conn = Bunny.new
-			conn.start
-			ch = conn.create_channel
-			q  = ch.queue("insert_new_bug", :auto_delete => true)
-			x  = ch.default_exchange
-			q.subscribe do |delivery_info, metadata, payload| 
-			  b,s = JSON.parse payload
-			   Bug.insert_new_bug b , s
-			end
-            
-			x.publish([bug_params , state_params ].to_json, :routing_key => q.name)
-
+			mq_channel = ApplicationRecord.get_channel
+            bug_queue  = mq_channel.queue("insert_new_bug", :auto_delete => true)
+            exchange = mq_channel.default_exchange
+            bug_queue.subscribe do |delivery_info, metadata, payload| 
+              b,s = JSON.parse payload
+              @bug = Bug.insert_new_bug b , s
+            end
+			exchange.publish([bug_params , state_params ].to_json, :routing_key => 'insert_new_bug')
 			render status: :ok
     	end
 

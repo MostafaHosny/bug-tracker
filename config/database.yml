@@ -9,24 +9,44 @@
 # And be sure to use new-style password hashing:
 #   http://dev.mysql.com/doc/refman/5.7/en/old-client.html
 #
+# default: &default
+#   adapter: mysql2
+#   encoding: utf8
+#   pool: 15
+#   username: root
+#   password: asd321
+#   socket: /var/run/mysqld/mysqld.sock
+
+# development:
+#   <<: *default
+#   database: bug-tracker_development
+
+# # Warning: The database defined as "test" will be erased and
+# # re-generated from your development database when you run "rake".
+# # Do not set this db to the same as development or production.
+# test:
+#   <<: *default
+#   database: bug-tracker_test
 default: &default
   adapter: mysql2
   encoding: utf8
-  pool: 15
+  reconnect: false
+  pool: 5
   username: root
-  password: asd321
-  socket: /var/run/mysqld/mysqld.sock
+  password: zzz
+  host: sql_srv
+  port: 3306 #<%= ENV['MYSQL_PORT_3306_TCP_PORT'] %> 
 
 development:
   <<: *default
-  database: bug-tracker_development
+  database: bug_tracker_development
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: bug-tracker_test
+  database: bug_tracker_test
+
+production:
+  <<: *default
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

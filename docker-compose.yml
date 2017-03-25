@@ -1,43 +1,13 @@
 
-# version: '2'
-
-# networks:
-#   app-tier:
-#     driver: bridge
-# services:
-#   rabbitmq:
-#     image: 'bitnami/rabbitmq:latest'
-#     ports:
-#       - 5672:5672
-#     networks:
-#       - app-tier
-#   app:
-#     build: .
-#     command: rails server -p 3000 -b '0.0.0.0'
-#     volumes:
-#       - .:/app
-#     ports:
-#       - "3000:3000"
-#     links:
-#       - mysql
-#     image: 'bugtracker_app_1'
-#     networks:
-#       - app-tier
-#   mysql:
-#     image: mysql
-#     ports:
-#       - "3306"
-#     environment:
-#       MYSQL_ROOT_PASSWORD: asdasdasd
-#       MYSQL_USER: user
-#       MYSQL_PASSWORD: asdasdasd
-#     networks:
-#       - app-tier
-
 version: '2'
+networks:
+  app-tier:
+    driver: bridge
 services:
   db:
     image: mysql
+    networks:
+      - app-tier
     ports:
       - "3307:3306"
     environment:
@@ -59,19 +29,35 @@ services:
     depends_on:
       - db
       - elasticsearch
-  rabbitmq:
-      image: 'bitnami/rabbitmq:latest'
-      ports:
-      - 15672:15672
+      - rabbit1
+    networks:
+      - app-tier
+  rabbit1:
+    image: harbur/rabbitmq-cluster
+    hostname: rabbit1
+    environment:
+      - ERLANG_COOKIE=abcdefg
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-tier
   elasticsearch:
     image: elasticsearch
+    networks:
+      - app-tier
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: "-Xmx1g -Xms1g"
+      # ES_JAVA_OPTS: "-Xmx1g -Xms1g"
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
 
 volumes:
   elasticsearch: {}

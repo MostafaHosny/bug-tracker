@@ -6,6 +6,6 @@ ADD Gemfile /bug-tracker/Gemfile
 ADD Gemfile.lock /bug-tracker/Gemfile.lock
 RUN bundle install
 ADD . /bug-tracker
-
+EXPOSE 5672 15672
 
 

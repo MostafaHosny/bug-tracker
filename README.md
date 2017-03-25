@@ -1,24 +1,57 @@
 # README
+after you clone the project cd to dir 
+and run docker-compose-up 
+there is 4 images will run 
+bugtracker_web_1 
+bugtracker_rabbit1_1 
+bugtracker_db_1 
+bugtracker_elasticsearch_1
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+you need to run the migration of database it's created but you just need to run this command 
+ "docker-compose run web rake db:migrate" 
 
-Things you may want to cover:
+now you can test  
+1-insert bug theroug this api 
+type: POST 
+url:localhost:3000/api/v1/bugs
+headres => token: 5 , Content-Type = application/json 
+body = 
+{
+ "bug": { "status":"new" , "comment": "hehee" , "priority": "minor"} ,
+ "state":{"device":"iPhone" , "os":"android" , "memory": "1024" , "storage" : "20480" }
+}
 
-* Ruby version
 
-* System dependencies
+2-show bug by id 
 
-* Configuration
+type: get 
+url:localhost:3000/api/v1/bugs/[id]
+headres => token: 5 , Content-Type = application/json
 
-* Database creation
+response 
 
-* Database initialization
+{
+  "id": 1,
+  "number": 1,
+  "status": "new",
+  "priority": "minor",
+  "comment": "hehee",
+  "state": {
+    "id": 1,
+    "device": "iPhone",
+    "os": "android",
+    "memory": 1024,
+    "storage": 20480
+  }
+}
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
+to test search method run this command and go to the console 
+"docker-compose run web rails c" 
 
-* Deployment instructions
+Bug.elk_search (any word you want to search )
 
-* ...
+
+
+
+

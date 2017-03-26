@@ -1,4 +1,6 @@
 # README
+
+Hint: "Please to any services use the next ports on your machine "5672" rabbitmq , and 9200 elasticsearch"
 after you clone the project cd to dir 
 and run docker-compose-up 
 there is 4 images will run 
